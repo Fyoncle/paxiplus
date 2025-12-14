@@ -13,6 +13,10 @@
     "PaxiMixin",
     "accessor.FilePackResourcesAccessor",
     "accessor.PackAccessor",
+    "compat.fragmentum.FragmentumLayerMixin",
+    "compat.fragmentum.FragmentumLayerMixin$FragmentumResourcesMixin",
+    "compat.fragmentum.FragmentumLayerMixin$FragmentumSourceMixin",
+    "compat.fragmentum.FragmentumPackMixin",
     "compat.moonlight.DynamicResourcePackAccessor",
     "compat.moonlight.DynamicResourcePackMixin"
   ],

@@ -37,8 +37,8 @@ public class PackMixin implements PackTricks {
                     int i;
                     for (i = 0; i < list.size() - 1; i++) {
                         Pack other_pack = function.apply(list.get(i));
-                        if (other_pack.getDefaultPosition() == Pack.Position.TOP && !(((PackTricks) other_pack).isAfterUserPack())
-                                && (other_pack.getId().startsWith("file/") || other_pack.getId().startsWith("paxi/"))) {
+                        if (other_pack.getDefaultPosition() == Pack.Position.TOP
+                                && !(((PackTricks) other_pack).isAfterUserPack())) {
                             break;
                         }
                     }

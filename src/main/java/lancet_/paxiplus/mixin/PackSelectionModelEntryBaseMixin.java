@@ -26,7 +26,9 @@ public abstract class PackSelectionModelEntryBaseMixin {
     @ModifyExpressionValue(method = "canMoveDown", at = @At("MIXINEXTRAS:EXPRESSION"))
     private boolean stopIfPaxiDown(boolean original){
         List<Pack> list = getSelfList();
-        return original && pack.getPackSource() != PaxiPackSource.PACK_SOURCE_PAXI;
+        int i = list.indexOf(pack);
+        return original && pack.getPackSource() != PaxiPackSource.PACK_SOURCE_PAXI
+                && list.get(i + 1).getPackSource() != PaxiPackSource.PACK_SOURCE_PAXI;
     }
 
     @Definition(id = "i", local = @Local(type = int.class))
@@ -34,6 +36,8 @@ public abstract class PackSelectionModelEntryBaseMixin {
     @ModifyExpressionValue(method = "canMoveUp", at = @At("MIXINEXTRAS:EXPRESSION"))
     private boolean stopIfPaxiUp(boolean original){
         List<Pack> list = getSelfList();
-        return original && pack.getPackSource() != PaxiPackSource.PACK_SOURCE_PAXI;
+        int i = list.indexOf(pack);
+        return original && pack.getPackSource() != PaxiPackSource.PACK_SOURCE_PAXI
+                && list.get(i - 1).getPackSource() != PaxiPackSource.PACK_SOURCE_PAXI;
     }
 }

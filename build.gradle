@@ -53,11 +53,13 @@ dependencies {
 
 	modImplementation "maven.modrinth:paxi:${paxi_version}"
 	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-	modImplementation "maven.modrinth:moonlight:${moonlight_version}"
-	include(implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-fabric:0.3.2-beta.3")))
-
 	implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:0.5.0"))
 	include("io.github.llamalad7:mixinextras-fabric:0.5.0:slim")
+
+	// Compat section
+	include(implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-fabric:0.3.2-beta.3")))
+	modImplementation "maven.modrinth:moonlight:${moonlight_version}"
+	modImplementation "maven.modrinth:fragmentum:${fragmentum_version}"
 }
 
 loom {

@@ -16,7 +16,11 @@ public class PaxiPlusMixinPlugin implements IMixinConfigPlugin {
 
     private static final Map<String, Supplier<Boolean>> CONDITIONS = ImmutableMap.of(
             "lancet_.paxiplus.mixin.compat.moonlight.DynamicResourcePackAccessor", () -> FabricLoader.getInstance().isModLoaded("moonlight"),
-            "lancet_.paxiplus.mixin.compat.moonlight.DynamicResourcePackMixin", () -> FabricLoader.getInstance().isModLoaded("moonlight")
+            "lancet_.paxiplus.mixin.compat.moonlight.DynamicResourcePackMixin", () -> FabricLoader.getInstance().isModLoaded("moonlight"),
+            "lancet_.paxiplus.mixin.compat.fragmentum.FragmentumPackMixin", () -> FabricLoader.getInstance().isModLoaded("fragmentum"),
+            "lancet_.paxiplus.mixin.compat.fragmentum.FragmentumLayerMixin", () -> FabricLoader.getInstance().isModLoaded("fragmentum"),
+            "lancet_.paxiplus.mixin.compat.fragmentum.FragmentumLayerMixin.FragmentumSourceMixin", () -> FabricLoader.getInstance().isModLoaded("fragmentum"),
+            "lancet_.paxiplus.mixin.compat.fragmentum.FragmentumLayerMixin.FragmentumResourcesMixin", () -> FabricLoader.getInstance().isModLoaded("fragmentum")
     );
 
     @Override

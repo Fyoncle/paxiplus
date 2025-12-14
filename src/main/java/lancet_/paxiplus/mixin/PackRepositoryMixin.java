@@ -13,23 +13,19 @@ import lancet_.paxiplus.interfaces.PackRepositoryTricks;
 import lancet_.paxiplus.interfaces.PackTricks;
 import lancet_.paxiplus.interfaces.PaxiRepositorySourceTricks;
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
-import net.minecraft.server.packs.repository.Pack;
-import net.minecraft.server.packs.repository.PackRepository;
-import net.minecraft.server.packs.repository.RepositorySource;
-import net.minecraft.server.packs.repository.ServerPacksSource;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
+import net.minecraft.server.packs.repository.*;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 @Mixin(value = PackRepository.class, priority = 2000)
 public abstract class PackRepositoryMixin implements PackRepositoryTricks {
 
+    @Mutable
     @Final
     @Shadow
     private Set<RepositorySource> sources;
@@ -116,26 +112,39 @@ public abstract class PackRepositoryMixin implements PackRepositoryTricks {
         return map;
     }
 
+    @Inject(method = "discoverAvailable", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Maps;newTreeMap()Ljava/util/TreeMap;", shift = At.Shift.AFTER))
+    private void holdUserPacks(CallbackInfoReturnable<Map<String, Pack>> cir){
+        this.sources = new LinkedHashSet<>(Stream.concat(
+                this.sources.stream().filter(repositorySource -> !(repositorySource instanceof FolderRepositorySource)),
+                (this.sources.stream().filter(repositorySource -> repositorySource instanceof FolderRepositorySource)))
+                .toList());
+    }
+
     @Inject(method = "discoverAvailable", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/packs/repository/RepositorySource;loadPacks(Ljava/util/function/Consumer;)V", shift = At.Shift.AFTER))
     private void pullOutPacksInDiscoveringProcess(CallbackInfoReturnable<Map<String, Pack>> cir, @Local LocalRef<Map<String, Pack>> map, @Local RepositorySource repositorySource) {
         this.loadingPacksMap = map.get();
-        if (sources.stream().toList().indexOf(repositorySource) == sources.size() - 2) {
+        List<RepositorySource> sources = this.sources.stream().toList();
+        //PaxiPlus.LOGGER.info("Loaded source: {}, id {} out of {}", repositorySource, sources.indexOf(repositorySource), sources.size() - 1);
+        if (sources.indexOf(repositorySource) == sources.size() - 2) {
             Optional<RepositorySource> repoSource = getPaxiRepositorySource();
             if (repoSource.isEmpty()) {
                 PaxiPlus.LOGGER.error("Repository could not be found when loading Paxi packs at last");
             } else {
                 PaxiRepositorySource paxiRepoSource = (PaxiRepositorySource) repoSource.get();
-                ((PaxiRepositorySourceTricks) paxiRepoSource).loadPacksTrick(pack -> map.get().put(pack.getId(), pack), (PackRepository) (Object) this);
-                map.set(map.get());
+                ((PaxiRepositorySourceTricks) paxiRepoSource).loadPacksTrick(pack -> loadingPacksMap.put(pack.getId(), pack), (PackRepository) (Object) this);
+                map.set(loadingPacksMap);
+                PaxiPlus.LOGGER.info("Loaded before-user Paxi packs");
             }
-        } else if (sources.stream().toList().indexOf(repositorySource) == sources.size() - 1) {
+        }
+        else if (sources.indexOf(repositorySource) == sources.size() - 1) {
             Optional<RepositorySource> repoSource = getPaxiRepositorySource();
             if (repoSource.isEmpty()) {
                 PaxiPlus.LOGGER.error("Repository could not be found when loading after-user Paxi packs at last");
             } else {
                 PaxiRepositorySource afterUserPaxiRepoSource = (PaxiRepositorySource) repoSource.get();
-                ((PaxiRepositorySourceTricks) afterUserPaxiRepoSource).loadAfterUserPacksTrick(pack -> map.get().put(pack.getId(), pack), ((PaxiRepositorySourceTricks) afterUserPaxiRepoSource).afterUserPacks());
-                map.set(map.get());
+                ((PaxiRepositorySourceTricks) afterUserPaxiRepoSource).loadAfterUserPacksTrick(pack -> loadingPacksMap.put(pack.getId(), pack), ((PaxiRepositorySourceTricks) afterUserPaxiRepoSource).afterUserPacks());
+                map.set(loadingPacksMap);
+                PaxiPlus.LOGGER.info("Loaded after-user Paxi packs");
             }
         }
     }
