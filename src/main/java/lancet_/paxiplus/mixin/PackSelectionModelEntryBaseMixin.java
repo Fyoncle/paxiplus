@@ -17,27 +17,19 @@ import java.util.List;
 public abstract class PackSelectionModelEntryBaseMixin {
     @Shadow @Final private Pack pack;
 
-    @Shadow protected abstract List<Pack> getSelfList();
-
     @Definition(id = "i", local = @Local(type = int.class))
     @Definition(id = "list", local = @Local(type = List.class))
     @Definition(id = "size", method = "Ljava/util/List;size()I")
     @Expression("i < list.size() - 1")
     @ModifyExpressionValue(method = "canMoveDown", at = @At("MIXINEXTRAS:EXPRESSION"))
     private boolean stopIfPaxiDown(boolean original){
-        List<Pack> list = getSelfList();
-        int i = list.indexOf(pack);
-        return original && pack.getPackSource() != PaxiPackSource.PACK_SOURCE_PAXI
-                && list.get(i + 1).getPackSource() != PaxiPackSource.PACK_SOURCE_PAXI;
+        return original && pack.getPackSource() != PaxiPackSource.PACK_SOURCE_PAXI;
     }
 
     @Definition(id = "i", local = @Local(type = int.class))
     @Expression("i > 0")
     @ModifyExpressionValue(method = "canMoveUp", at = @At("MIXINEXTRAS:EXPRESSION"))
     private boolean stopIfPaxiUp(boolean original){
-        List<Pack> list = getSelfList();
-        int i = list.indexOf(pack);
-        return original && pack.getPackSource() != PaxiPackSource.PACK_SOURCE_PAXI
-                && list.get(i - 1).getPackSource() != PaxiPackSource.PACK_SOURCE_PAXI;
+        return original && pack.getPackSource() != PaxiPackSource.PACK_SOURCE_PAXI;
     }
 }
