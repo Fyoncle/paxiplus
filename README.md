@@ -12,8 +12,8 @@
 </div>
 
 This is an addon for [Paxi](https://modrinth.com/mod/paxi), serving six purposes:
-- Backporting the 1.21+ Paxi feature for loading packs from any folder <sub>(See [#33](https://github.com/YUNG-GANG/Paxi/issues/33))
-  - Fixes a issue where developers are unable to get monetized due to Modrinth not recognizing the Paxi folder. If you use the resourcepacks folder it will embed them properly now.</sub>
+- Backporting the 1.21+ Paxi feature for loading packs from any folder <sub>(See [#33](https://github.com/YUNG-GANG/Paxi/issues/33))</sub>
+  - <sub>Fixes a issue where developers are unable to get monetized due to Modrinth not recognizing the Paxi folder. If you use the resourcepacks folder it will embed them properly now.</sub>
 - Making it possible to use Paxi for built-in resourcepacks and datapacks added by mods <sub>(See [#27](https://github.com/YUNG-GANG/Paxi/issues/27))</sub>
 - Restricting Paxi from auto-loading packs in `config -> paxi -> resourcepacks` and `datapacks` if they're not listed in `resourcepack_load_order.json` or `datapacks_load_order.json` for datapacks.
 - Letting Paxi generate datapack folder and JSON file on the start-up instead of after world generation
